@@ -1,25 +1,35 @@
-version: '3.8'
-
 services:
   backend:
-    image: huandrey/backend-guardiao:latest
-    container_name: backend-guardiao
-    # Porta local : Porta do container
-    # Você pode alterar o número à esquerda (ex: 8080) se já estiver em uso no servidor
+    image: gledsonlscruz/backend-protege-saude:v1.2.0
+    container_name: backend-protege-saude
+    pull_policy: always
+    env_file:
+      - .env
     ports:
-      - "8080:8080"  
+      - "8080:8080"
     restart: unless-stopped
     volumes:
       - denuncias_data:/app/data
 
   frontend:
-    image: huandrey/odonto-guardiao:latest
-    container_name: odonto-guardiao
-    # Porta local : Porta do container
-    # Altere o número à esquerda (ex: 3000) se quiser que a interface rode em outra porta
+    image: gledsonlscruz/frontend-protege-saude:v1.2.0
+    container_name: frontend-protege-saude
+    pull_policy: always
     ports:
-      - "3000:80"  
+      - "3000:80"
     restart: unless-stopped
+    depends_on:
+      - backend
+
+  admin:
+    image: gledsonlscruz/admin-protege-saude:v1.2.0
+    container_name: admin-protege-saude
+    pull_policy: always
+    ports:
+      - "3001:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
 
 volumes:
   denuncias_data:
